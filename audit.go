@@ -5,7 +5,6 @@ import (
 	"flag"
 	"fmt"
 	"log"
-	"log/syslog"
 	"os"
 	"os/exec"
 	"os/signal"
@@ -15,6 +14,7 @@ import (
 	"strings"
 	"syscall"
 
+	syslog "github.com/RackSec/srslog"
 	"github.com/spf13/viper"
 )
 
@@ -139,6 +139,8 @@ func createSyslogOutput(config *viper.Viper) (*AuditWriter, error) {
 	if err != nil {
 		return nil, fmt.Errorf("Failed to open syslog writer. Error: %v", err)
 	}
+
+	syslogWriter.SetFormatter(syslog.UnixFormatter)
 
 	return NewAuditWriter(syslogWriter, attempts), nil
 }
